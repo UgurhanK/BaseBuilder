@@ -53,6 +53,12 @@ namespace BaseBuilder
 
         public static unsafe Vector3? TraceShape(CounterStrikeSharp.API.Modules.Utils.Vector _origin, CounterStrikeSharp.API.Modules.Utils.QAngle _viewangles, bool drawResult = false, bool fromPlayer = false)
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                TraceFunc = NativeAPI.FindSignature(Addresses.ServerPath, "48 B8 ? ? ? ? ? ? ? ? 55 48 89 E5 41 57 41 56 49 89 D6 41 55");
+                GameTraceManager = NativeAPI.FindSignature(Addresses.ServerPath, "48 8D 05 ? ? ? ? F3 0F 58 8D ? ? ? ? 31 FF");
+            }
+
             var _gameTraceManagerAddress = Address.GetAbsoluteAddress(GameTraceManager, 3, 7);
 
             _traceShape = Marshal.GetDelegateForFunctionPointer<TraceShapeDelegate>(TraceFunc);

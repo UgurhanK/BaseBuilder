@@ -25,7 +25,7 @@ public partial class BaseBuilder
 
     public CenterHtmlMenu Guns()
     {
-        var menu = new CenterHtmlMenu("Silahını Seç", this);
+        var menu = new CenterHtmlMenu("Choose Weapon", this);
 
         menu.AddMenuOption("AK-47", (player, option) =>
         {

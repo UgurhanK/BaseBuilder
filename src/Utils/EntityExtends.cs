@@ -19,23 +19,20 @@ namespace BaseBuilder;
 
 public static class EntityExtends
 {
-    public static void Health(this CCSPlayerController player, int health)
+    public static void SetHp(this CCSPlayerController controller, int health = 100)
     {
-        if (player.PlayerPawn == null || player.PlayerPawn.Value == null)
-        {
-            return;
-        }
+        if (health <= 0 || !controller.PawnIsAlive || controller.PlayerPawn.Value == null || !controller.IsValid) return;
 
-        player.Health = health;
-        player.PlayerPawn.Value.Health = health;
+        controller.Health = health;
+        controller.PlayerPawn.Value.Health = health;
 
         if (health > 100)
         {
-            player.MaxHealth = health;
-            player.PlayerPawn.Value.MaxHealth = health;
+            controller.MaxHealth = health;
+            controller.PlayerPawn.Value.MaxHealth = health;
         }
 
-        Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseEntity", "m_iHealth");
+        Server.NextFrame(() => Utilities.SetStateChanged(controller.PlayerPawn.Value, "CBaseEntity", "m_iHealth"));
     }
 
     public static bool CheckValid(this CCSPlayerController? player)
@@ -60,17 +57,5 @@ public static class EntityExtends
     internal static bool IsPlayer(this CCSPlayerController? player)
     {
         return player is { IsValid: true, IsHLTV: false, IsBot: false, UserId: not null, SteamID: > 0 };
-    }
-
-    public static MemoryFunctionVoid<IntPtr, IntPtr, IntPtr, IntPtr> _SetParent = new("\\x4D\\x8B\\xD9\\x48\\x85\\xD2\\x74\\x2A");
-    public static void SetParent(this CBaseEntity? entity, CBaseEntity? target)
-    {
-        if (entity == null || !entity.IsValid)
-            throw new ArgumentNullException("Entity is null");
-
-        if (target != null && target.IsValid)
-            _SetParent.Invoke(entity!.Handle, target!.Handle, 0, 0);
-        else
-            _SetParent.Invoke(entity!.Handle, 0, 0, 0);
     }
 }

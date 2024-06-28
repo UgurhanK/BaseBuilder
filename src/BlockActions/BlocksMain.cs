@@ -88,20 +88,6 @@ public partial class BaseBuilder
         }
     }
 
-    private static MemoryFunctionVoid<CBaseEntity, CBaseEntity, CUtlStringToken?, matrix3x4_t?> CBaseEntity_SetParentFunc
-        = new(GameData.GetSignature("CBaseEntity_SetParent"));
-
-    public static void CBaseEntity_SetParent(CBaseEntity childrenEntity, CBaseEntity parentEntity)
-    {
-        if (!childrenEntity.IsValid || !parentEntity.IsValid) return;
-
-        var origin = new Vector(childrenEntity.AbsOrigin!.X, childrenEntity.AbsOrigin!.Y, childrenEntity.AbsOrigin!.Z);
-        CBaseEntity_SetParentFunc.Invoke(childrenEntity, parentEntity, null, null);
-        // If not teleported, the childrenEntity will not follow the parentEntity correctly.
-        childrenEntity.Teleport(origin, new QAngle(IntPtr.Zero), new Vector(IntPtr.Zero));
-        Console.WriteLine("CBaseEntity_SetParent() done!");
-    }
-
     public void FirstPress(CCSPlayerController player, CBaseProp prop)
     {
         var hitPoint = TraceShape(new Vector(player.PlayerPawn.Value!.AbsOrigin!.X, player.PlayerPawn.Value!.AbsOrigin!.Y, player.PlayerPawn.Value!.AbsOrigin!.Z + player.PlayerPawn.Value.CameraServices!.OldPlayerViewOffsetZ), player.PlayerPawn.Value!.EyeAngles!, false, true);
@@ -162,6 +148,20 @@ public partial class BaseBuilder
             //Checking if removing parent empty prop
             if (!UsedBlocks.Contains(entity) && entity.AbsOrigin!.Z > -9) entity.Remove();
         }
+    }
+
+    private static MemoryFunctionVoid<CBaseEntity, CBaseEntity, CUtlStringToken?, matrix3x4_t?> CBaseEntity_SetParentFunc
+        = new(GameData.GetSignature("CBaseEntity_SetParent"));
+
+    public static void CBaseEntity_SetParent(CBaseEntity childrenEntity, CBaseEntity parentEntity)
+    {
+        if (!childrenEntity.IsValid || !parentEntity.IsValid) return;
+
+        var origin = new Vector(childrenEntity.AbsOrigin!.X, childrenEntity.AbsOrigin!.Y, childrenEntity.AbsOrigin!.Z);
+        CBaseEntity_SetParentFunc.Invoke(childrenEntity, parentEntity, null, null);
+        // If not teleported, the childrenEntity will not follow the parentEntity correctly.
+        childrenEntity.Teleport(origin, new QAngle(IntPtr.Zero), new Vector(IntPtr.Zero));
+        Console.WriteLine("CBaseEntity_SetParent() done!");
     }
 }
 

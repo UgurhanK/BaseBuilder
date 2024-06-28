@@ -22,35 +22,16 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    [GameEventHandler(HookMode.Post)]
-    public HookResult EventPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+    [GameEventHandler]
+    public HookResult EventItemPickup(EventItemPickup @event, GameEventInfo info)
     {
         if (@event == null) return HookResult.Continue;
 
         var player = @event.Userid;
-        if (player == null || !player.CheckValid()) return HookResult.Continue;
 
-        if (player.Team == CsTeam.Terrorist)
-        {
-            player.RemoveWeapons();
-            player.GiveNamedItem("weapon_knife");
-        }
+        if (player == null) return HookResult.Continue;
 
-        if (player.TeamNum == ZOMBIE)
-        {
-            switch (PlayerTypes[player].zombieType)
-            {
-                case "default":
-                    Server.NextFrame(() => player.SetHp(2500));
-                    break;
-                case "tanker":
-                    Server.NextFrame(() => player.SetHp(5000));
-                    break;
-
-                default: 
-                    break;
-            }
-        }
+        if (player.TeamNum == ZOMBIE) player.RemoveWeapons();
 
         return HookResult.Continue;
     }

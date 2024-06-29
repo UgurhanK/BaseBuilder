@@ -26,8 +26,6 @@ public partial class BaseBuilder
     [GameEventHandler]
     public HookResult EventPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
     {
-        if (@event == null || @event.Userid == null) return HookResult.Continue;
-
         var player = @event.Userid;
 
         if (player == null || !player.CheckValid()) return HookResult.Continue;
@@ -37,13 +35,23 @@ public partial class BaseBuilder
 
         if (tcount < ctcount)
         {
-            if (PlayerTypes.ContainsKey(player)) PlayerTypes[player] = new() { currentTeam = 2, defaultTeam = 2, playerColor = colors[new Random().Next(0, colors.Count)] };
-            if (!PlayerTypes.ContainsKey(player)) PlayerTypes.Add(player, new PlayerData() { currentTeam = 2, defaultTeam = 2, playerColor = colors[new Random().Next(0, colors.Count)] });
+            PlayerTypes[player] = new()
+            {
+                currentTeam = 2,
+                defaultTeam = 2,
+                playerColor = colors[new Random().Next(0, colors.Count)]
+            };
+
             AddTimer(1, () => { player.SwitchTeam(CsTeam.Terrorist); player.CommitSuicide(false, true); });
-        } else
+        }else
         {
-            if (PlayerTypes.ContainsKey(player)) PlayerTypes[player] = new() { currentTeam = 3, defaultTeam = 3, playerColor = colors[new Random().Next(0, colors.Count)] };
-            if (!PlayerTypes.ContainsKey(player)) PlayerTypes.Add(player, new PlayerData() { currentTeam = 3, defaultTeam = 3, playerColor = colors[new Random().Next(0, colors.Count)] });
+            PlayerTypes[player] = new()
+            {
+                currentTeam = 3,
+                defaultTeam = 3,
+                playerColor = colors[new Random().Next(0, colors.Count)]
+            };
+
             AddTimer(1, () => { player.SwitchTeam(CsTeam.CounterTerrorist); player.CommitSuicide(false, true); });
         }
 

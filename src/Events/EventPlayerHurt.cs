@@ -22,29 +22,23 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    [GameEventHandler(HookMode.Post)]
-    public HookResult EventPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+    [GameEventHandler(HookMode.Pre)]
+    public HookResult EventPlayerHurt(EventPlayerHurt @event, GameEventInfo info)
     {
         if (@event == null) return HookResult.Continue;
 
-        var player = @event.Userid;
-        if (player == null || !player.CheckValid()) return HookResult.Continue;
+        var player = @event.Attacker;
+        var victim = @event.Userid;
 
-        if (player.Team == CsTeam.Terrorist)
+        if (player == null || victim == null || !player.CheckValid() || !victim.CheckValid()) return HookResult.Continue;
+
+        if (player.TeamNum == BUILDER && PlayerTypes[player].isSuperKnifeActivatedForCt)
         {
-            player.RemoveWeapons();
-            player.GiveNamedItem("weapon_knife");
+            victim.CommitSuicide(false, true);
         }
-
-        if (player.TeamNum == ZOMBIE)
+        else if (player.TeamNum == ZOMBIE && PlayerTypes[player].isSuperKnifeActivatedForT)
         {
-            Server.NextFrame(() =>
-            {
-                player.SetHp(PlayerTypes[player].playerZombie.Health + PlayerTypes[player].extraHp);
-                player.PlayerPawn.Value!.Speed = PlayerTypes[player].playerZombie.SpeedMultiplier * PlayerTypes[player].extraSpeedMultiplier;
-                player.PlayerPawn.Value!.GravityScale = PlayerTypes[player].playerZombie.GravityMultiplier * PlayerTypes[player].extraGravityMultiplier;
-                //player.PlayerPawn.Value!.SetModel(PlayerTypes[player].playerZombie.modelPath);
-            });
+            victim.CommitSuicide(false, true);
         }
 
         return HookResult.Continue;

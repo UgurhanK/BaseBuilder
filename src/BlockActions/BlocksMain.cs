@@ -108,15 +108,8 @@ public partial class BaseBuilder
                 emptyProp.DispatchSpawn();
                 emptyProp.Teleport(Vector3toVector(hitPoint.Value));
 
-                CBaseEntity_SetParent(prop, emptyProp);
-
-                //Teleport block if its so far away.
+                //Distance
                 int distance = (int)VectorUtils.CalculateDistance(emptyProp.AbsOrigin!, player.PlayerPawn.Value!.AbsOrigin!);
-                if (distance > 450)
-                {
-                    emptyProp.Teleport(VectorUtils.GetEndXYZ(player, 400));
-                    distance = 400;
-                }
 
                 PlayerHolds.Add(player, new Builder() { mainProp = prop, emptyProp = emptyProp, owner = player, isRotating = false, distance = distance});
             }
@@ -127,18 +120,21 @@ public partial class BaseBuilder
     {
         //To Remove Block On Prep Time
         if (!UsedBlocks.Contains(PlayerHolds[player].mainProp)) UsedBlocks.Add(PlayerHolds[player].mainProp);
-
         block.Teleport(VectorUtils.GetEndXYZ(player, PlayerHolds[player].distance), null, player.PlayerPawn.Value!.AbsVelocity!);
 
         //Checking ATTACK2 & ATTACK buttons for distance.
         if (player.Buttons.HasFlag(PlayerButtons.Attack))
         {
-            PlayerHolds[player].distance += 2;
+            if (PlayerHolds[player].distance > 350) PlayerHolds[player].distance += 7;
+            PlayerHolds[player].distance += 3;
         }
-        else if (player.Buttons.HasFlag(PlayerButtons.Attack2) && PlayerHolds[player].distance > 2)
+        else if (player.Buttons.HasFlag(PlayerButtons.Attack2) && PlayerHolds[player].distance > 3)
         {
-            PlayerHolds[player].distance -= 2;
+            if (PlayerHolds[player].distance > 350) PlayerHolds[player].distance -= 7;
+            PlayerHolds[player].distance -= 3;
         }
+
+        CBaseEntity_SetParent(PlayerHolds[player].mainProp, PlayerHolds[player].emptyProp);
     }
 
     public void RemoveNotUsedBlocks()
@@ -151,17 +147,21 @@ public partial class BaseBuilder
     }
 
     private static MemoryFunctionVoid<CBaseEntity, CBaseEntity, CUtlStringToken?, matrix3x4_t?> CBaseEntity_SetParentFunc
-        = new(GameData.GetSignature("CBaseEntity_SetParent"));
+        = new("\\x4D\\x8B\\xD9\\x48\\x85\\xD2\\x74\\x2A");
 
     public static void CBaseEntity_SetParent(CBaseEntity childrenEntity, CBaseEntity parentEntity)
     {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            CBaseEntity_SetParentFunc = new MemoryFunctionVoid<CBaseEntity, CBaseEntity, CUtlStringToken?, matrix3x4_t?>("\\x48\\x85\\xF6\\x74\\x2A\\x48\\x8B\\x47\\x10\\xF6\\x40\\x31\\x02\\x75\\x2A\\x48\\x8B\\x46\\x10\\xF6\\x40\\x31\\x02\\x75\\x2A\\xB8\\x2A\\x2A\\x2A\\x2A");
+        }
+
         if (!childrenEntity.IsValid || !parentEntity.IsValid) return;
 
         var origin = new Vector(childrenEntity.AbsOrigin!.X, childrenEntity.AbsOrigin!.Y, childrenEntity.AbsOrigin!.Z);
         CBaseEntity_SetParentFunc.Invoke(childrenEntity, parentEntity, null, null);
         // If not teleported, the childrenEntity will not follow the parentEntity correctly.
         childrenEntity.Teleport(origin, new QAngle(IntPtr.Zero), new Vector(IntPtr.Zero));
-        Console.WriteLine("CBaseEntity_SetParent() done!");
     }
 }
 

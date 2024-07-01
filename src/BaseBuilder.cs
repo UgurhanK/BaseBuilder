@@ -20,18 +20,22 @@ namespace BaseBuilder;
 public partial class BaseBuilder : BasePlugin, IPluginConfig<Config>
 {
     public override string ModuleName => "BaseBuilder";
-    public override string ModuleVersion => "1.0.0";
+    public override string ModuleVersion => "2.1.0";
     public override string ModuleAuthor => "UgurhanK & BoinK";
     public override string ModuleDescription => "Basically BaseBuilder";
 
     public Config Config { get; set; } = null!;
     public static Config cfg = null!;
 
+    public Dictionary<string, Zombie> classes = new Dictionary<string, Zombie>();
+
     public const int ZOMBIE = 2;
     public const int BUILDER = 3;
     public override void Load(bool hotReload)
     {
         RegisterListener<Listeners.OnTick>(OnGameFrame);
+        RegisterListener<Listeners.OnServerPrecacheResources>(OnPrecache);
+
         Server.PrintToConsole("BASEBUILDER LOADED by UgurhanK");
 
         base.Load(hotReload);
@@ -41,5 +45,7 @@ public partial class BaseBuilder : BasePlugin, IPluginConfig<Config>
     {
         Config = config;
         cfg = config;
+
+        classes = config.zombies;
     }
 }

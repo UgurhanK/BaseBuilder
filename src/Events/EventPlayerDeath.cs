@@ -23,29 +23,19 @@ namespace BaseBuilder;
 public partial class BaseBuilder
 {
     [GameEventHandler(HookMode.Post)]
-    public HookResult EventPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+    public HookResult EventPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
     {
         if (@event == null) return HookResult.Continue;
 
-        var player = @event.Userid;
-        if (player == null || !player.CheckValid()) return HookResult.Continue;
+        var player = @event.Attacker;
+        var victim = @event.Userid;
 
-        if (player.Team == CsTeam.Terrorist)
-        {
-            player.RemoveWeapons();
-            player.GiveNamedItem("weapon_knife");
-        }
+        if (player == null || victim == null || !player.CheckValid() || !victim.CheckValid() || player == victim) return HookResult.Continue;
+        PlayerTypes[player].balance += cfg.Economy.OnKill;
+        player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyKill));
 
-        if (player.TeamNum == ZOMBIE)
-        {
-            Server.NextFrame(() =>
-            {
-                player.SetHp(PlayerTypes[player].playerZombie.Health + PlayerTypes[player].extraHp);
-                player.PlayerPawn.Value!.Speed = PlayerTypes[player].playerZombie.SpeedMultiplier * PlayerTypes[player].extraSpeedMultiplier;
-                player.PlayerPawn.Value!.GravityScale = PlayerTypes[player].playerZombie.GravityMultiplier * PlayerTypes[player].extraGravityMultiplier;
-                //player.PlayerPawn.Value!.SetModel(PlayerTypes[player].playerZombie.modelPath);
-            });
-        }
+        CCSPlayerController? assister = @event.Assister;
+        if (assister != null && assister.CheckValid()){ PlayerTypes[assister].balance += cfg.Economy.OnAssist; player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyAssist));}
 
         return HookResult.Continue;
     }

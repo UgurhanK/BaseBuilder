@@ -11,6 +11,9 @@ These features are what is currently working or planeed
   - [x] Player Can Lock The Prop When Player First Press[E] And No Other One Can Interact With That Block
 - [x] SHOP
   - [x] Super Knife
+- [ ] TODO
+  - [ ] Block Lock System
+  - [ ] Remove Blocks After Player Die
 ## Install
 1. Install Metamod:Source and Counter Strike Sharp.
 2. Copy `BaseBuilder` to `csgo/addons/counterstrikesharp/plugins/`.

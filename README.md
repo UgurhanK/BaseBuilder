@@ -4,7 +4,7 @@ A CS2 Plugin Made for Tesla[TR] Server.
 - [MetaMod:Source](https://github.com/alliedmodders/metamod-source/)
 - [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp)
 ## Optional
-- [Custom Asset (UgurhanK)](https://steamcommunity.com/sharedfiles/filedetails/?id=3279806633)
+- [Custom Assets (UgurhanK)](https://steamcommunity.com/sharedfiles/filedetails/?id=3279806633)
 ## Features
 
 - [x] Block Interaction

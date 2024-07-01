@@ -4,7 +4,7 @@ A CS2 Plugin Made for Tesla[TR] Server.
 - [MetaMod:Source](https://github.com/alliedmodders/metamod-source/)
 - [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp)
 ## Features
-These features are what is currently working or planeed
+
 - [x] Block Interaction
   - [x] Player Can Move Props With Using [E]
   - [x] Player Can Rotate Props With Using [R]

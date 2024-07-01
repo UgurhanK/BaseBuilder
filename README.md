@@ -10,7 +10,7 @@ These features are what is currently working or planeed
   - [x] Player Can Rotate Props With Using [R]
   - [x] Player Can Lock The Prop When Player First Press[E] And No Other One Can Interact With That Block
 - [x] Zombies
-  - [x] Add Zombie Classes From Config
+  - [x] Added Zombie Classes From Config
   - [x] Custom Models
   - [x] Precache Models
 - [x] SHOP

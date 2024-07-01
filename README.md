@@ -11,6 +11,7 @@ These features are what is currently working or planeed
   - [x] Player Can Lock The Prop When Player First Press[E] And No Other One Can Interact With That Block
 - [x] SHOP
   - [x] Super Knife
+  - [x] Health, Gravity, Speed
 - [ ] TODO
   - [ ] Block Lock System
   - [ ] Remove Blocks After Player Die

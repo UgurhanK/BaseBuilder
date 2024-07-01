@@ -32,10 +32,10 @@ public partial class BaseBuilder
 
         if (player == null || victim == null || !player.CheckValid() || !victim.CheckValid() || player == victim) return HookResult.Continue;
         PlayerTypes[player].balance += cfg.Economy.OnKill;
-        player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyKill).Replace("{enemy}", victim.PlayerName));
+        player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyKill).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnKill.ToString()));
 
         CCSPlayerController? assister = @event.Assister;
-        if (assister != null && assister.CheckValid()){ PlayerTypes[assister].balance += cfg.Economy.OnAssist; player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyAssist).Replace("{enemy}", victim.PlayerName));}
+        if (assister != null && assister.CheckValid()){ PlayerTypes[assister].balance += cfg.Economy.OnAssist; player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyAssist).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnAssist.ToString()));}
 
         return HookResult.Continue;
     }

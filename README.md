@@ -19,6 +19,7 @@ A CS2 Plugin Made for Tesla[TR] Server.
 - [ ] TODO
   - [ ] Block Lock System
   - [ ] Remove Blocks After Player Die
+  - [ ] Sounds and Custom Player Models
 ## Install
 1. Install Metamod:Source and Counter Strike Sharp.
 2. Copy `BaseBuilder` to `csgo/addons/counterstrikesharp/plugins/`.

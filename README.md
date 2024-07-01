@@ -5,6 +5,7 @@ A CS2 Plugin Made for Tesla[TR] Server.
 - [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp)
 ## Optional
 - [Custom Assets (UgurhanK)](https://steamcommunity.com/sharedfiles/filedetails/?id=3279806633)
+- [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager)
 ## Features
 
 - [x] Block Interaction

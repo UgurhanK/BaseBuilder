@@ -9,7 +9,8 @@ These features are what is currently working or planeed
   - [x] Player Can Move Props With Using [E]
   - [x] Player Can Rotate Props With Using [R]
   - [x] Player Can Lock The Prop When Player First Press[E] And No Other One Can Interact With That Block
-- [ ] SHOP (TODO)
+- [x] SHOP
+  - [x] Super Knife
 ## Install
 1. Install Metamod:Source and Counter Strike Sharp.
 2. Copy `BaseBuilder` to `csgo/addons/counterstrikesharp/plugins/`.

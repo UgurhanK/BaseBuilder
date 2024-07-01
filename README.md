@@ -4,12 +4,22 @@ A CS2 Plugin Made for Tesla[TR] Server.
 - [MetaMod:Source](https://github.com/alliedmodders/metamod-source/)
 - [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp)
 ## Features
-These features are what is currently working or planeed
+
 - [x] Block Interaction
   - [x] Player Can Move Props With Using [E]
   - [x] Player Can Rotate Props With Using [R]
-  - [x] The player Can Lock The Prop When Player First Press[E] And No Other One Can Interact With That Block
-- [ ] SHOP (TODO)
+  - [x] Player Can Lock The Prop When Player First Press[E] And No Other One Can Interact With That Block
+- [x] Zombies
+  - [x] Added Zombie Classes From Config
+  - [x] Custom Models
+  - [x] Precache Models
+- [x] SHOP
+  - [x] Super Knife
+  - [x] Health, Gravity, Speed
+- [ ] TODO
+  - [ ] Block Lock System
+  - [ ] Remove Blocks After Player Die
+  - [ ] Sounds and Custom Player Models
 ## Install
 1. Install Metamod:Source and Counter Strike Sharp.
 2. Copy `BaseBuilder` to `csgo/addons/counterstrikesharp/plugins/`.

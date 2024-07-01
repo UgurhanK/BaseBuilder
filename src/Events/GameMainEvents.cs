@@ -18,6 +18,7 @@ using CSTimer = CounterStrikeSharp.API.Modules.Timers;
 using System.Data;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Menu;
+using System.Collections.Generic;
 
 namespace BaseBuilder;
 
@@ -296,5 +297,13 @@ public class PlayerData
     public int currentTeam = 2;
     public int defaultTeam = 2;
     public Color playerColor = Color.White;
-    public string zombieType = "default";
+    public Zombie playerZombie = new Zombie();
+
+    public int balance = 0;
+    
+    public bool isSuperKnifeActivatedForCt = false;
+    public bool isSuperKnifeActivatedForT = false;
+    public int extraHp = 0;
+    public float extraGravityMultiplier = 1;
+    public float extraSpeedMultiplier = 1;
 }

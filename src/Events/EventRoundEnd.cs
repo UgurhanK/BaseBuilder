@@ -31,11 +31,16 @@ public partial class BaseBuilder
             prop.Render = Color.White;
             Utilities.SetStateChanged(prop, "CBaseModelEntity", "m_clrRender");
         }
-        
+
         //Swap Teams
         foreach (var data in PlayerTypes)
         {
-            if(data.Value.defaultTeam == 2)
+            if (data.Key == null || !data.Key.CheckValid()) continue;
+
+            data.Value.isSuperKnifeActivatedForT = false;
+            data.Value.isSuperKnifeActivatedForCt = false;
+
+            if (data.Value.defaultTeam == 2)
             {
                 data.Value.defaultTeam = 3;
                 data.Value.currentTeam = 3;

@@ -26,9 +26,11 @@ public partial class BaseBuilder
     [GameEventHandler]
     public HookResult EventPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
     {
+        if (@event == null) return HookResult.Continue;
+
         var player = @event.Userid;
 
-        if (player == null || !player.CheckValid()) return HookResult.Continue;
+        if (player == null || !player.CheckValid() || player.IsBot) return HookResult.Continue;
 
         int tcount = Utilities.GetPlayers().Where(p => p.CheckValid() && p.Team == CsTeam.Terrorist).Count();
         int ctcount = Utilities.GetPlayers().Where(p => p.CheckValid() && p.Team == CsTeam.CounterTerrorist).Count();
@@ -41,9 +43,9 @@ public partial class BaseBuilder
                 defaultTeam = 2,
                 playerColor = colors[new Random().Next(0, colors.Count)]
             };
-
             AddTimer(1, () => { player.SwitchTeam(CsTeam.Terrorist); player.CommitSuicide(false, true); });
-        }else
+        }
+        else
         {
             PlayerTypes[player] = new()
             {
@@ -51,7 +53,6 @@ public partial class BaseBuilder
                 defaultTeam = 3,
                 playerColor = colors[new Random().Next(0, colors.Count)]
             };
-
             AddTimer(1, () => { player.SwitchTeam(CsTeam.CounterTerrorist); player.CommitSuicide(false, true); });
         }
 

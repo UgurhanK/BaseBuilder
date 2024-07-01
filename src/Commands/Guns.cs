@@ -17,11 +17,12 @@ public partial class BaseBuilder
     {
         if (caller == null) return;
 
-        if(isBuildTimeEnd && !isPrepTimeEnd)
+        if (isBuildTimeEnd && !isPrepTimeEnd)
         {
             MenuManager.OpenCenterHtmlMenu(this, caller, Guns());
         }
     }
+
 
     public CenterHtmlMenu Guns()
     {
@@ -29,7 +30,7 @@ public partial class BaseBuilder
 
         menu.AddMenuOption("AK-47", (player, option) =>
         {
-            if (isPrepTimeEnd || player.TeamNum == ZOMBIE || isPrepTimeEnd || !player.PawnIsAlive) { MenuManager.CloseActiveMenu(player);  return;}
+            if (isPrepTimeEnd || player.TeamNum == ZOMBIE || isPrepTimeEnd || !player.PawnIsAlive) { MenuManager.CloseActiveMenu(player); return; }
 
             MenuManager.CloseActiveMenu(player);
             player.RemoveWeapons();

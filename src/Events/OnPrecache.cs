@@ -22,5 +22,11 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    
+    public void OnPrecache(ResourceManifest manifest)
+    {
+        foreach (var zombie in Config.zombies.Values)
+        {
+            manifest.AddResource(zombie.ModelPath);
+        }
+    }
 }

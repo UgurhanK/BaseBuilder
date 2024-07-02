@@ -28,6 +28,7 @@ public class Strings
     [JsonProperty] public string NotEnoughMoney { get; set; } = "You Dont Have Enough Money";
     [JsonProperty] public string EarnMoneyKill { get; set; } = "You earned {credit} credit by killing {enemy}.";
     [JsonProperty] public string EarnMoneyAssist { get; set; } = "You earned {credit} credit by assisting {enemy}.";
+    [JsonProperty] public string PurchaseSuccesful { get; set; } = "The purchase is successful. Balance: {credit}";
 }
 
 public class Zombie

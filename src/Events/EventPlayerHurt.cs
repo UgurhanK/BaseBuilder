@@ -22,23 +22,23 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    [GameEventHandler(HookMode.Pre)]
+    [GameEventHandler]
     public HookResult EventPlayerHurt(EventPlayerHurt @event, GameEventInfo info)
     {
         if (@event == null) return HookResult.Continue;
 
-        var player = @event.Attacker;
-        var victim = @event.Userid;
+        CCSPlayerController? player = @event.Attacker;
+        CCSPlayerController? victim = @event.Userid;
 
         if (player == null || victim == null || !player.CheckValid() || !victim.CheckValid()) return HookResult.Continue;
 
         if (player.TeamNum == BUILDER && PlayerTypes[player].isSuperKnifeActivatedForCt)
         {
-            victim.CommitSuicide(false, true);
+            Server.NextFrame(() => victim.CommitSuicide(false, true));
         }
         else if (player.TeamNum == ZOMBIE && PlayerTypes[player].isSuperKnifeActivatedForT)
         {
-            victim.CommitSuicide(false, true);
+            Server.NextFrame(() => victim.CommitSuicide(false, true));
         }
 
         return HookResult.Continue;

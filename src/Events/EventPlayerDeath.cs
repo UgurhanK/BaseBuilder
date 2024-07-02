@@ -37,7 +37,7 @@ public partial class BaseBuilder
         player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyKill).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnKill.ToString()));
 
         CCSPlayerController? assister = @event.Assister;
-        if (assister != null && assister.CheckValid()){ PlayerTypes[assister].balance += cfg.Economy.OnAssist; player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyAssist).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnAssist.ToString()));}
+        if (assister != null && assister.CheckValid()){ PlayerTypes[assister].balance += cfg.Economy.OnAssist; assister.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyAssist).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnAssist.ToString()));}
 
         return;
     }
@@ -46,7 +46,7 @@ public partial class BaseBuilder
     {
         var player = @event.Userid;
 
-        if (player == null || !player.CheckValid()) return;
+        if (player == null || !player.CheckValid() || !isBuildTimeEnd) return;
 
         List<PropData> ownedBlocks = UsedBlocks.Values.Where(x => x.owner == player).ToList();
 
@@ -55,6 +55,7 @@ public partial class BaseBuilder
             if (data.myProp != null && data.myProp.IsValid) data.myProp.Remove();
         }
     }
+
     public void ChangeToZombie(EventPlayerDeath @event)
     {
         var player = @event.Userid;

@@ -40,10 +40,18 @@ public partial class BaseBuilder
         {
             Server.NextFrame(() =>
             {
-                player.SetHp(PlayerTypes[player].playerZombie.Health + PlayerTypes[player].extraHp);
-                player.PlayerPawn.Value!.Speed = PlayerTypes[player].playerZombie.SpeedMultiplier * PlayerTypes[player].extraSpeedMultiplier;
-                player.PlayerPawn.Value!.GravityScale = PlayerTypes[player].playerZombie.GravityMultiplier * PlayerTypes[player].extraGravityMultiplier;
+                player.SetHp(PlayerTypes[player].playerZombie.Health + PlayerTypes[player].extraHpForT);
+                player.PlayerPawn.Value!.Speed = PlayerTypes[player].playerZombie.SpeedMultiplier * PlayerTypes[player].extraSpeedMultiplierForT;
+                player.PlayerPawn.Value!.GravityScale = PlayerTypes[player].playerZombie.GravityMultiplier * PlayerTypes[player].extraGravityMultiplierForT;
                 player.PlayerPawn.Value!.SetModel(PlayerTypes[player].playerZombie.ModelPath);
+            });
+        } else
+        {
+            Server.NextFrame(() =>
+            {
+                player.SetHp(100 + PlayerTypes[player].extraHpForCt);
+                player.PlayerPawn.Value!.Speed = 1;
+                player.PlayerPawn.Value!.GravityScale = 1;
             });
         }
 

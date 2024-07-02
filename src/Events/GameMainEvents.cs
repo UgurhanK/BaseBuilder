@@ -127,16 +127,47 @@ public partial class BaseBuilder
         //Now add timer
         timer = AddTimer(1, () =>
         {
+            if (prepTime == cfg.prepTime && buildTime == cfg.buildTime) ExecutePlay("sounds/basebuilder/phase_build3.vsnd");
+
             if (isPrepTimeEnd && isBuildTimeEnd) return;
             
             if (buildTime > 0) buildTime--;
 
+            switch (buildTime)
+            {
+                case 120:
+                    ExecutePlay("sounds/basebuilder/2min-2.vsnd");
+                    break;
+                case 60:
+                    ExecutePlay("sounds/basebuilder/1min.vsnd");
+                    break;
+                case 30:
+                    ExecutePlay("sounds/basebuilder/30sec.vsnd");
+                    break;
+                case 10:
+                    ExecutePlay("sounds/basebuilder/10sec.vsnd");
+                    break;
+                case 5:
+                    ExecutePlay("sounds/basebuilder/5sec.vsnd");
+                    break;
+                case 0:
+                    if(prepTime == cfg.prepTime)
+                    {
+                        ExecutePlay("sounds/basebuilder/phase_prep3.vsnd");
+                    }
+                    break;
+
+            }
+
             if(buildTime == 0)
             {
-                //Give Guns Menu To Players
-                foreach (var p in Utilities.GetPlayers().Where(o => o != null && o.CheckValid() && o.TeamNum == BUILDER))
+                if(prepTime == cfg.prepTime)
                 {
-                    MenuManager.OpenCenterHtmlMenu(this, p, Guns());
+                    //Give Guns Menu To Players
+                    foreach (var p in Utilities.GetPlayers().Where(o => o != null && o.CheckValid() && o.TeamNum == BUILDER))
+                    {
+                        MenuManager.OpenCenterHtmlMenu(this, p, Guns());
+                    }
                 }
 
                 //Teleport Builders To Lobby And Remove Not Used Blocks
@@ -149,6 +180,9 @@ public partial class BaseBuilder
 
                 if(prepTime == 0)
                 {
+                    List<string> paths = new List<string>() { "sounds/basebuilder/round_start.vsnd", "sounds/basebuilder/round_start2.vsnd" };
+                    ExecutePlay(paths[Random.Shared.Next(0,paths.Count)]);
+
                     //Release Zombies
                     TeleportToLobby(CsTeam.Terrorist);
 
@@ -229,7 +263,6 @@ public partial class BaseBuilder
 
         UsedBlocks.Clear();
         PlayerHolds.Clear();
-        BlocksOwner.Clear();
 
         colors = new List<Color>() { Color.AliceBlue, Color.Aqua, Color.Blue, Color.Brown, Color.BurlyWood, Color.Chocolate, Color.Cyan, Color.DarkBlue, Color.DarkGreen, Color.DarkMagenta, Color.DarkOrange, Color.DarkRed, Color.Green, Color.Yellow, Color.Red, Color.Silver, Color.Pink, Color.Purple };
     }
@@ -294,7 +327,10 @@ public class PlayerData
     
     public bool isSuperKnifeActivatedForCt = false;
     public bool isSuperKnifeActivatedForT = false;
-    public int extraHp = 0;
-    public float extraGravityMultiplier = 1;
-    public float extraSpeedMultiplier = 1;
+    public int extraHpForCt = 0;
+    public int extraHpForT = 0;
+    public float extraGravityMultiplierForT = 1;
+    public float extraGravityMultiplierForCt = 1;
+    public float extraSpeedMultiplierForT = 1;
+    public float extraSpeedMultiplierForCT = 1;
 }

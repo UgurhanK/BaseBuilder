@@ -22,5 +22,5 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    
+
 }

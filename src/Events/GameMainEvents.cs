@@ -116,9 +116,6 @@ public partial class BaseBuilder
 
         foreach (var p in Utilities.GetPlayers().Where(o => o != null && o.CheckValid()))
         {
-            p.RemoveWeapons();
-            p.GiveNamedItem("weapon_knife");
-
             if (p.TeamNum == ZOMBIE) continue;
 
             p.PlayerPawn.Value!.Render = PlayerTypes[p].playerColor;
@@ -169,6 +166,7 @@ public partial class BaseBuilder
     public HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
     {
         var player = @event.Userid;
+        EventPlayerDeath(@event);
 
         if (@event == null || !player.CheckValid()) return HookResult.Continue;
 
@@ -200,21 +198,16 @@ public partial class BaseBuilder
             });
         }
 
-        if (player.TeamNum == BUILDER && isBuildTimeEnd && isPrepTimeEnd && @event.Attacker != null)
-        {
-            PlayerTypes[player].currentTeam = 2;
-
-            AddTimer(1, () =>
-            {
-                player.RespawnClient();
-            });
-        }
-
         return HookResult.Continue;
     }
 
     public void Reset()
     {
+        Server.ExecuteCommand("mp_death_drop_gun 0");
+        Server.ExecuteCommand("mp_respawn_on_death_t 1");
+        Server.ExecuteCommand("mp_ct_default_secondary \"\"");
+        Server.ExecuteCommand("mp_t_default_secondary \"\"");
+
         //Reset All Timers
         foreach (var timer in Timers)
         {
@@ -284,8 +277,6 @@ public partial class BaseBuilder
                 break;
             }
         }
-
-        destination.Z += 20;
 
         player.PlayerPawn.Value!.Teleport(destination);
         

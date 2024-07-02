@@ -22,24 +22,24 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    [GameEventHandler(HookMode.Post)]
-    public HookResult EventPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
+    public void EventPlayerDeath(EventPlayerDeath @event)
     {
-        if (@event == null) return HookResult.Continue;
+        if (@event == null) return;
 
         CheckPlayersBlocks(@event);
+        ChangeToZombie(@event);
 
         var player = @event.Attacker;
         var victim = @event.Userid;
 
-        if (player == null || victim == null || !player.CheckValid() || !victim.CheckValid() || player == victim) return HookResult.Continue;
+        if (player == null || victim == null || !player.CheckValid() || !victim.CheckValid() || player == victim) return;
         PlayerTypes[player].balance += cfg.Economy.OnKill;
         player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyKill).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnKill.ToString()));
 
         CCSPlayerController? assister = @event.Assister;
         if (assister != null && assister.CheckValid()){ PlayerTypes[assister].balance += cfg.Economy.OnAssist; player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyAssist).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnAssist.ToString()));}
 
-        return HookResult.Continue;
+        return;
     }
 
     public void CheckPlayersBlocks(EventPlayerDeath @event)
@@ -54,5 +54,14 @@ public partial class BaseBuilder
         {
             if (data.myProp != null && data.myProp.IsValid) data.myProp.Remove();
         }
+    }
+    public void ChangeToZombie(EventPlayerDeath @event)
+    {
+        var player = @event.Userid;
+
+        if (player == null || !player.CheckValid() || player.TeamNum == BUILDER) return;
+
+        PlayerTypes[player].currentTeam = 2;
+        player.SwitchTeam(CsTeam.Terrorist);
     }
 }

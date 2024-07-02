@@ -66,7 +66,7 @@ public partial class BaseBuilder
                     var block = player.GetClientAimTarget();
                     if (block != null) 
                     {
-                        if (BlocksOwner.ContainsKey(block.Index) && BlocksOwner[block.Index] != player) return;
+                        if (UsedBlocks.ContainsKey(block) && UsedBlocks[block].owner != player) return;
 
                         FirstPress(player, block); 
                     }

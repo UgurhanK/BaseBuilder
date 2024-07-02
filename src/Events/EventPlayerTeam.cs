@@ -22,11 +22,11 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    [GameEventHandler]
     public HookResult EventPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
     {
         if (@event == null) return HookResult.Continue;
 
+        
         return HookResult.Handled;
     }
 }

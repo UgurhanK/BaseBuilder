@@ -30,11 +30,11 @@ public partial class BaseBuilder
         var player = @event.Userid;
         if (player == null || !player.CheckValid()) return HookResult.Continue;
 
-        if (player.Team == CsTeam.Terrorist)
+        AddTimer(1, () =>
         {
             player.RemoveWeapons();
             player.GiveNamedItem("weapon_knife");
-        }
+        });
 
         if (player.TeamNum == ZOMBIE)
         {

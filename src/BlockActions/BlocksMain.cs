@@ -23,7 +23,7 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    public List<CBaseProp> UsedBlocks = new List<CBaseProp>();
+    public Dictionary<CBaseProp, PropData> UsedBlocks = new Dictionary<CBaseProp, PropData>();
     public Dictionary<CCSPlayerController, Builder> PlayerHolds = new Dictionary<CCSPlayerController, Builder>();
     public Dictionary<uint, CCSPlayerController> BlocksOwner = new Dictionary<uint, CCSPlayerController>();
     public List<Color> colors = new List<Color>() { Color.AliceBlue, Color.Aqua, Color.Blue, Color.Brown, Color.BurlyWood, Color.Chocolate, Color.Cyan, Color.DarkBlue, Color.DarkGreen, Color.DarkMagenta, Color.DarkOrange, Color.DarkRed, Color.Green, Color.Yellow, Color.Red, Color.Silver, Color.Pink, Color.Purple };
@@ -107,6 +107,7 @@ public partial class BaseBuilder
                 emptyProp.Render = Color.Transparent;
                 emptyProp.DispatchSpawn();
                 emptyProp.Teleport(Vector3toVector(hitPoint.Value));
+                if(emptyProp.Entity != null) emptyProp.Entity.Name = "parent_prop";
 
                 //Distance
                 int distance = (int)VectorUtils.CalculateDistance(emptyProp.AbsOrigin!, player.PlayerPawn.Value!.AbsOrigin!);
@@ -119,7 +120,7 @@ public partial class BaseBuilder
     public void PressRepeat(CCSPlayerController player, CDynamicProp block)
     {
         //To Remove Block On Prep Time
-        if (!UsedBlocks.Contains(PlayerHolds[player].mainProp)) UsedBlocks.Add(PlayerHolds[player].mainProp);
+        if (!UsedBlocks.ContainsKey(PlayerHolds[player].mainProp)) UsedBlocks.Add(PlayerHolds[player].mainProp, new PropData(player, PlayerHolds[player].mainProp));
         block.Teleport(VectorUtils.GetEndXYZ(player, PlayerHolds[player].distance), null, player.PlayerPawn.Value!.AbsVelocity!);
 
         //Checking ATTACK2 & ATTACK buttons for distance.
@@ -141,11 +142,14 @@ public partial class BaseBuilder
     {
         foreach (var entity in Utilities.FindAllEntitiesByDesignerName<CBaseProp>("prop_dynamic"))
         {
+            if (entity != null && entity.IsValid && entity.Entity != null && entity.Entity.Name != null && entity.Entity.Name == "parent_prop") continue;
+
             //Checking if removing parent empty prop
-            if (!UsedBlocks.Contains(entity) && entity.AbsOrigin!.Z > -9) entity.Remove();
+            if (!UsedBlocks.ContainsKey(entity) && entity.AbsOrigin!.Z > -9) entity.Remove();
         }
     }
 
+    //Win sig
     private static MemoryFunctionVoid<CBaseEntity, CBaseEntity, CUtlStringToken?, matrix3x4_t?> CBaseEntity_SetParentFunc
         = new("\\x4D\\x8B\\xD9\\x48\\x85\\xD2\\x74\\x2A");
 
@@ -173,4 +177,17 @@ public class Builder
     public CCSPlayerController owner = null!;
     public bool isRotating;
     public int distance;
+}
+
+public class PropData
+{
+    public PropData(CCSPlayerController player, CBaseProp prop)
+    {
+        owner = player;
+        myProp = prop;
+    }
+
+    //public bool isLocked = false;
+    public CCSPlayerController owner;
+    public CBaseProp myProp;
 }

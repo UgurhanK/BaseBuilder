@@ -43,7 +43,7 @@ public partial class BaseBuilder
                 player.SetHp(PlayerTypes[player].playerZombie.Health + PlayerTypes[player].extraHp);
                 player.PlayerPawn.Value!.Speed = PlayerTypes[player].playerZombie.SpeedMultiplier * PlayerTypes[player].extraSpeedMultiplier;
                 player.PlayerPawn.Value!.GravityScale = PlayerTypes[player].playerZombie.GravityMultiplier * PlayerTypes[player].extraGravityMultiplier;
-                //player.PlayerPawn.Value!.SetModel(PlayerTypes[player].playerZombie.modelPath);
+                player.PlayerPawn.Value!.SetModel(PlayerTypes[player].playerZombie.ModelPath);
             });
         }
 

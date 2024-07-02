@@ -15,11 +15,11 @@ public class Config : BasePluginConfig
     [JsonProperty] public int buildTime { get; set; } = 120;
     [JsonProperty] public int prepTime { get; set; } = 30;
     [JsonProperty] public Dictionary<string, Zombie> zombies { get; set; } = new Dictionary<string, Zombie>() { { "Classic Zombie", new Zombie() { Name = "Classic" } }, { "Tanker Zombie", new Zombie() { Health = 5000, Name = "Tanker" } } };
-    [JsonProperty] public TimeStrings texts { get; set; } = new TimeStrings();
+    [JsonProperty] public Strings texts { get; set; } = new Strings();
     [JsonProperty] public Economy Economy { get; set; } = new Economy();
 }
 
-public class TimeStrings
+public class Strings
 {
     [JsonProperty] public string building { get; set; } = "Remaining Build Time : {time}";
     [JsonProperty] public string preparing { get; set; } = "Remaining Prepare Time : {time}";

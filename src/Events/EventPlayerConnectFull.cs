@@ -41,7 +41,8 @@ public partial class BaseBuilder
             {
                 currentTeam = 2,
                 defaultTeam = 2,
-                playerColor = colors[new Random().Next(0, colors.Count)]
+                playerColor = colors[Random.Shared.Next(0, colors.Count)],
+                playerZombie = cfg.zombies.Values.First()
             };
             AddTimer(1, () => { player.SwitchTeam(CsTeam.Terrorist); player.CommitSuicide(false, true); });
         }
@@ -51,7 +52,8 @@ public partial class BaseBuilder
             {
                 currentTeam = 3,
                 defaultTeam = 3,
-                playerColor = colors[new Random().Next(0, colors.Count)]
+                playerColor = colors[Random.Shared.Next(0, colors.Count)],
+                playerZombie = cfg.zombies.Values.First()
             };
             AddTimer(1, () => { player.SwitchTeam(CsTeam.CounterTerrorist); player.CommitSuicide(false, true); });
         }

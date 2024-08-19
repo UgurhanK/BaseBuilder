@@ -15,6 +15,7 @@ public partial class BaseBuilder
     [ConsoleCommand("guns")]
     public void OnGunsCommand(CCSPlayerController? caller, CommandInfo info)
     {
+        if (isEnabled == false) return;
         if (caller == null) return;
 
         if (isBuildTimeEnd && !isPrepTimeEnd)

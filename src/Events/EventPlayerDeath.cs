@@ -25,6 +25,7 @@ public partial class BaseBuilder
     public void EventPlayerDeath(EventPlayerDeath @event)
     {
         if (@event == null) return;
+        if (isEnabled == false) return;
 
         CheckPlayersBlocks(@event);
         ChangeToZombie(@event);
@@ -33,11 +34,11 @@ public partial class BaseBuilder
         var victim = @event.Userid;
 
         if (player == null || victim == null || !player.CheckValid() || !victim.CheckValid() || player == victim) return;
-        PlayerTypes[player].balance += cfg.Economy.OnKill;
+        PlayerDatas[player].balance += cfg.Economy.OnKill;
         player.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyKill).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnKill.ToString()));
 
         CCSPlayerController? assister = @event.Assister;
-        if (assister != null && assister.CheckValid()){ PlayerTypes[assister].balance += cfg.Economy.OnAssist; assister.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyAssist).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnAssist.ToString()));}
+        if (assister != null && assister.CheckValid()){ PlayerDatas[assister].balance += cfg.Economy.OnAssist; assister.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.EarnMoneyAssist).Replace("{enemy}", victim.PlayerName).Replace("{credit}", cfg.Economy.OnAssist.ToString()));}
 
         return;
     }
@@ -46,7 +47,7 @@ public partial class BaseBuilder
     {
         var player = @event.Userid;
 
-        if (player == null || !player.CheckValid() || !isBuildTimeEnd) return;
+        if (player == null || !player.CheckValid() || !isBuildTimeEnd || !isPrepTimeEnd) return;
 
         List<PropData> ownedBlocks = UsedBlocks.Values.Where(x => x.owner == player).ToList();
 
@@ -60,9 +61,8 @@ public partial class BaseBuilder
     {
         var player = @event.Userid;
 
-        if (player == null || !player.CheckValid() || player.TeamNum == BUILDER) return;
+        if (player == null || !player.CheckValid() || player.TeamNum != BUILDER || !isPrepTimeEnd || !isBuildTimeEnd) return;
 
-        PlayerTypes[player].currentTeam = 2;
         player.SwitchTeam(CsTeam.Terrorist);
     }
 }

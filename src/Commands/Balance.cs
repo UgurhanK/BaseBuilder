@@ -1,6 +1,7 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Menu;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,12 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    [ConsoleCommand("shop")]
-    public void OnShopCommand(CCSPlayerController? caller, CommandInfo info)
+    [ConsoleCommand("balance"), ConsoleCommand("bakiye"), ConsoleCommand("kredi"), ConsoleCommand("credit")]
+    public void OnBalanceCommand(CCSPlayerController? caller, CommandInfo info)
     {
         if (isEnabled == false) return;
         if (caller == null) return;
 
-        MenuManager.OpenCenterHtmlMenu(this, caller, ShopMenu(caller));
+        caller.PrintToChat(ReplaceColorTags(cfg.texts.Prefix + cfg.texts.Balance).Replace("{credit}", GetBalance(caller).ToString()));
     }
 }

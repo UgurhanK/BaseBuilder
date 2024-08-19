@@ -25,6 +25,8 @@ public partial class BaseBuilder
     [GameEventHandler]
     public HookResult EventRoundEnd(EventRoundEnd @event, GameEventInfo info)
     {
+        if (isEnabled == false) return HookResult.Continue;
+
         //reset color
         foreach (var prop in Utilities.FindAllEntitiesByDesignerName<CBaseProp>("prop_dynamic"))
         {
@@ -32,33 +34,23 @@ public partial class BaseBuilder
             Utilities.SetStateChanged(prop, "CBaseModelEntity", "m_clrRender");
         }
 
-        //Swap Teams
-        foreach (var data in PlayerTypes)
+        //TeamSWAP
+        foreach (var player in Utilities.GetPlayers().Where(p => p != null && p.IsValid && p.PlayerPawn.IsValid && p.Connected == PlayerConnectedState.PlayerConnected))
         {
-            if (data.Key == null || !data.Key.CheckValid()) continue;
+            if (!PlayerDatas.TryGetValue(player, out var data)) continue;
 
-            data.Value.isSuperKnifeActivatedForT = false;
-            data.Value.isSuperKnifeActivatedForCt = false;
-
-            if (data.Value.defaultTeam == 2)
+            if (data.wasBuilderThisRound)
             {
-                data.Value.defaultTeam = 3;
-                data.Value.currentTeam = 3;
-
-                data.Key.SwitchTeam(CsTeam.CounterTerrorist);
-                data.Key.CommitSuicide(false, true);
-                continue;
+                player.SwitchTeam(CsTeam.Terrorist);
+            }
+            else
+            {
+                player.SwitchTeam(CsTeam.CounterTerrorist);
             }
 
-            if (data.Value.defaultTeam == 3)
-            {
-                data.Value.defaultTeam = 2;
-                data.Value.currentTeam = 2;
+            player.CommitSuicide(false, true);
 
-                data.Key.SwitchTeam(CsTeam.Terrorist);
-                data.Key.CommitSuicide(false, true);
-                continue;
-            }
+            data.wasBuilderThisRound = false;
         }
 
         return HookResult.Continue;

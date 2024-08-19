@@ -32,10 +32,12 @@ public partial class BaseBuilder
     public bool isBuildTimeEnd = false;
     public bool isPrepTimeEnd = false;
 
-    public Dictionary<CCSPlayerController, PlayerData> PlayerTypes = new Dictionary<CCSPlayerController, PlayerData>();
+    public Dictionary<CCSPlayerController, PlayerData> PlayerDatas = new Dictionary<CCSPlayerController, PlayerData>();
 
     public void PrintChatOnFrame()
     {
+        if (isEnabled == false) return;
+
         var players = Utilities.GetPlayers().Where(p => p.CheckValid());
 
         foreach (var player in players)
@@ -112,16 +114,28 @@ public partial class BaseBuilder
     [GameEventHandler]
     public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
+        foreach (var mapName in Config.PluginStartIn)
+        {
+            if (Server.MapName.Contains(mapName))
+            {
+                isEnabled = true;
+                break;
+            }
+        }
+
+        if (isEnabled == false) return HookResult.Continue;
+
         Reset();
+        Teamswitch_RoundStart(@event);
 
         foreach (var p in Utilities.GetPlayers().Where(o => o != null && o.CheckValid()))
         {
             if (p.TeamNum == ZOMBIE) continue;
 
-            p.PlayerPawn.Value!.Render = PlayerTypes[p].playerColor;
+            p.PlayerPawn.Value!.Render = PlayerDatas[p].playerColor;
             Utilities.SetStateChanged(p.PlayerPawn.Value, "CBaseModelEntity", "m_clrRender");
 
-            colors.Remove(PlayerTypes[p].playerColor);
+            colors.Remove(PlayerDatas[p].playerColor);
         }
 
         //Now add timer
@@ -199,6 +213,8 @@ public partial class BaseBuilder
     [GameEventHandler]
     public HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
     {
+        if (isEnabled == false) return HookResult.Continue;
+
         var player = @event.Userid;
         EventPlayerDeath(@event);
 
@@ -238,20 +254,15 @@ public partial class BaseBuilder
     public void Reset()
     {
         Server.ExecuteCommand("mp_death_drop_gun 0");
-        Server.ExecuteCommand("mp_respawn_on_death_t 1");
         Server.ExecuteCommand("mp_ct_default_secondary \"\"");
         Server.ExecuteCommand("mp_t_default_secondary \"\"");
+        Server.ExecuteCommand($"mp_roundtime {(int)(cfg.RoundTime / 60)}");
+        Server.ExecuteCommand($"sv_alltalk 1");
 
         //Reset All Timers
         foreach (var timer in Timers)
         {
             if (timer != null) timer.Kill();
-        }
-
-        //Reset Teams
-        foreach (var data in PlayerTypes)
-        {
-            data.Value.currentTeam = data.Value.defaultTeam;
         }
 
         //Reset Game
@@ -318,12 +329,18 @@ public partial class BaseBuilder
 
 public class PlayerData
 {
-    public int currentTeam = 2;
-    public int defaultTeam = 2;
+    public PlayerData(Color color, Zombie @class)
+    {
+        playerColor = color;
+        playerZombie = @class;
+    }
+
     public Color playerColor = Color.White;
     public Zombie playerZombie = new Zombie();
 
     public int balance = 0;
+
+    public bool wasBuilderThisRound = false;
     
     public bool isSuperKnifeActivatedForCt = false;
     public bool isSuperKnifeActivatedForT = false;

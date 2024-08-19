@@ -27,6 +27,8 @@ public partial class BaseBuilder
     {
         if (@event == null) return HookResult.Continue;
 
+        if (isEnabled == false) return HookResult.Continue;
+
         var player = @event.Userid;
         if (player == null || !player.CheckValid()) return HookResult.Continue;
 
@@ -40,16 +42,16 @@ public partial class BaseBuilder
         {
             Server.NextFrame(() =>
             {
-                player.SetHp(PlayerTypes[player].playerZombie.Health + PlayerTypes[player].extraHpForT);
-                player.PlayerPawn.Value!.Speed = PlayerTypes[player].playerZombie.SpeedMultiplier * PlayerTypes[player].extraSpeedMultiplierForT;
-                player.PlayerPawn.Value!.GravityScale = PlayerTypes[player].playerZombie.GravityMultiplier * PlayerTypes[player].extraGravityMultiplierForT;
-                player.PlayerPawn.Value!.SetModel(PlayerTypes[player].playerZombie.ModelPath);
+                player.SetHp(PlayerDatas[player].playerZombie.Health + PlayerDatas[player].extraHpForT);
+                player.PlayerPawn.Value!.Speed = PlayerDatas[player].playerZombie.SpeedMultiplier * PlayerDatas[player].extraSpeedMultiplierForT;
+                player.PlayerPawn.Value!.GravityScale = PlayerDatas[player].playerZombie.GravityMultiplier * PlayerDatas[player].extraGravityMultiplierForT;
+                player.PlayerPawn.Value!.SetModel(PlayerDatas[player].playerZombie.ModelPath);
             });
         } else
         {
             Server.NextFrame(() =>
             {
-                player.SetHp(100 + PlayerTypes[player].extraHpForCt);
+                player.SetHp(100 + PlayerDatas[player].extraHpForCt);
                 player.PlayerPawn.Value!.Speed = 1;
                 player.PlayerPawn.Value!.GravityScale = 1;
             });

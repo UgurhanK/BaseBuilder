@@ -22,12 +22,19 @@ namespace BaseBuilder;
 
 public partial class BaseBuilder
 {
-    public HookResult EventPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
+    public void Teamswitch_RoundStart(EventRoundStart @event)
     {
-        if (@event == null) return HookResult.Continue;
+        foreach(var player in Utilities.GetPlayers().Where(p => p != null && p.IsValid && p.PlayerPawn.IsValid && p.Connected == PlayerConnectedState.PlayerConnected))
+        {
+            if (!PlayerDatas.TryGetValue(player, out var data)) continue;
 
-        if (isEnabled == false) return HookResult.Continue;
-
-        return HookResult.Continue;
+            if(player.TeamNum == ZOMBIE)
+            {
+                data.wasBuilderThisRound = false;
+            } else
+            {
+                data.wasBuilderThisRound = true;
+            }
+        }
     }
 }

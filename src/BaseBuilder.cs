@@ -31,6 +31,8 @@ public partial class BaseBuilder : BasePlugin, IPluginConfig<Config>
 
     public const int ZOMBIE = 2;
     public const int BUILDER = 3;
+
+    public bool isEnabled = false;
     public override void Load(bool hotReload)
     {
         RegisterListener<Listeners.OnTick>(OnGameFrame);

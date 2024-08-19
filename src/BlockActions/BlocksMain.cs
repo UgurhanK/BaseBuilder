@@ -25,10 +25,12 @@ public partial class BaseBuilder
 {
     public Dictionary<CBaseProp, PropData> UsedBlocks = new Dictionary<CBaseProp, PropData>();
     public Dictionary<CCSPlayerController, Builder> PlayerHolds = new Dictionary<CCSPlayerController, Builder>();
-    public List<Color> colors = new List<Color>() { Color.AliceBlue, Color.Aqua, Color.Blue, Color.Brown, Color.BurlyWood, Color.Chocolate, Color.Cyan, Color.DarkBlue, Color.DarkGreen, Color.DarkMagenta, Color.DarkOrange, Color.DarkRed, Color.Green, Color.Yellow, Color.Red, Color.Silver, Color.Pink, Color.Purple };
+    public List<Color> colors = new List<Color>() { Color.AliceBlue, Color.Aqua, Color.Blue, Color.Brown, Color.BurlyWood, Color.Chocolate, Color.Cyan, Color.DarkBlue, Color.DarkGreen, Color.DarkMagenta, Color.DarkOrange, Color.DarkRed, Color.Green, Color.Yellow, Color.Red, Color.Pink, Color.Purple, Color.ForestGreen, Color.LightCyan, Color.Lime };
 
     public void OnGameFrame()
     {
+        if (isEnabled == false) return;
+
         PrintChatOnFrame();
 
         //Disable block actions in prep time
@@ -59,7 +61,7 @@ public partial class BaseBuilder
                 if (PlayerHolds.ContainsKey(player))
                 {
                     PressRepeat(player, PlayerHolds[player].emptyProp!);
-                } 
+                }
                 else
                 {
                     var block = player.GetClientAimTarget();
@@ -74,7 +76,7 @@ public partial class BaseBuilder
             {
                 if (PlayerHolds.ContainsKey(player))
                 {
-                    var newprop = Utilities.CreateEntityByName<CPhysicsProp>("prop_dynamic");
+                    var newprop = Utilities.CreateEntityByName<CBaseProp>("prop_dynamic");
                     if (newprop != null && newprop.IsValid)
                     {
                         player.ExecuteClientCommand("play sounds/basebuilder/block_drop.vsnd");
@@ -98,7 +100,7 @@ public partial class BaseBuilder
         if (prop != null && prop.IsValid && hitPoint != null && hitPoint.HasValue)
         {
             //Change block color to player color
-            prop.Render = PlayerTypes[player].playerColor;
+            prop.Render = PlayerDatas[player].playerColor;
             Utilities.SetStateChanged(prop, "CBaseModelEntity", "m_clrRender");
 
             //fixed some bugs
@@ -108,6 +110,8 @@ public partial class BaseBuilder
             if(emptyProp != null && emptyProp.IsValid)
             {
                 emptyProp.Render = Color.Transparent;
+                Server.NextFrame(() => Utilities.SetStateChanged(emptyProp, "CBaseModelEntity", "m_clrRender"));
+
                 emptyProp.DispatchSpawn();
                 emptyProp.Teleport(Vector3toVector(hitPoint.Value));
                 if(emptyProp.Entity != null) emptyProp.Entity.Name = "parent_prop";
@@ -148,22 +152,18 @@ public partial class BaseBuilder
             //Checking if removing parent prop
             if (entity != null && entity.IsValid && entity.Entity != null && entity.Entity.Name != null && entity.Entity.Name == "parent_prop") continue;
 
+            if (entity == null) continue;
+
             //Checking if removing parent prop
             if (!UsedBlocks.ContainsKey(entity) && entity.AbsOrigin!.Z > -9) entity.Remove();
         }
     }
 
-    //Win sig
     private static MemoryFunctionVoid<CBaseEntity, CBaseEntity, CUtlStringToken?, matrix3x4_t?> CBaseEntity_SetParentFunc
-        = new("\\x4D\\x8B\\xD9\\x48\\x85\\xD2\\x74\\x2A");
+        = new(GameData.GetSignature("CBaseEntity_SetParent"));
 
     public static void CBaseEntity_SetParent(CBaseEntity childrenEntity, CBaseEntity parentEntity)
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            CBaseEntity_SetParentFunc = new ("\\x48\\x85\\xF6\\x74\\x2A\\x48\\x8B\\x47\\x10\\xF6\\x40\\x31\\x02\\x75\\x2A\\x48\\x8B\\x46\\x10\\xF6\\x40\\x31\\x02\\x75\\x2A\\xB8\\x2A\\x2A\\x2A\\x2A");
-        }
-
         if (!childrenEntity.IsValid || !parentEntity.IsValid) return;
 
         var origin = new Vector(childrenEntity.AbsOrigin!.X, childrenEntity.AbsOrigin!.Y, childrenEntity.AbsOrigin!.Z);

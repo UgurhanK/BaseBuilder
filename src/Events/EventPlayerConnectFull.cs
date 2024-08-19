@@ -35,29 +35,31 @@ public partial class BaseBuilder
         int tcount = Utilities.GetPlayers().Where(p => p.CheckValid() && p.Team == CsTeam.Terrorist).Count();
         int ctcount = Utilities.GetPlayers().Where(p => p.CheckValid() && p.Team == CsTeam.CounterTerrorist).Count();
 
-        if (tcount < ctcount)
+        if(!PlayerDatas.TryGetValue(player, out var data))
         {
-            PlayerTypes[player] = new()
-            {
-                currentTeam = 2,
-                defaultTeam = 2,
-                playerColor = colors[Random.Shared.Next(0, colors.Count)],
-                playerZombie = cfg.zombies.Values.First()
-            };
-            AddTimer(1, () => { player.SwitchTeam(CsTeam.Terrorist); player.CommitSuicide(false, true); });
-        }
-        else
-        {
-            PlayerTypes[player] = new()
-            {
-                currentTeam = 3,
-                defaultTeam = 3,
-                playerColor = colors[Random.Shared.Next(0, colors.Count)],
-                playerZombie = cfg.zombies.Values.First()
-            };
-            AddTimer(1, () => { player.SwitchTeam(CsTeam.CounterTerrorist); player.CommitSuicide(false, true); });
+            PlayerDatas[player] = new PlayerData(colors[Random.Shared.Next(0, colors.Count)], classes.Values.First());
         }
 
+        if (isEnabled == false) return HookResult.Continue;
+
+        /*AddTimer(5, () =>
+        {
+            if (tcount < ctcount)
+            {
+                player.SwitchTeam(CsTeam.Terrorist);
+                player.RespawnClient();
+                player.SwitchTeam(CsTeam.CounterTerrorist);
+                player.SwitchTeam(CsTeam.Terrorist);
+                player.PendingTeamNum = 2;
+                player.TeamChanged = false;
+            }
+            else
+            {
+                player.SwitchTeam(CsTeam.CounterTerrorist);
+                PlayerDatas[player].wasBuilderThisRound = true;
+            }
+        });
+        */
         return HookResult.Continue;
     }
 }

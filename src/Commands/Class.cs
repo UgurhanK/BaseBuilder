@@ -16,6 +16,7 @@ public partial class BaseBuilder
     [ConsoleCommand("class"), ConsoleCommand("zombie"), ConsoleCommand("zombi")]
     public void OnClassCommand(CCSPlayerController? caller, CommandInfo info)
     {
+        if (isEnabled == false) return;
         if (caller == null) return;
 
         if(caller.TeamNum == ZOMBIE)
@@ -34,7 +35,7 @@ public partial class BaseBuilder
             {
                 if (player.TeamNum != ZOMBIE) { MenuManager.CloseActiveMenu(player); return; }
 
-                PlayerTypes[player].playerZombie = @class.Value;
+                PlayerDatas[player].playerZombie = @class.Value;
 
                 MenuManager.CloseActiveMenu(player);
             });

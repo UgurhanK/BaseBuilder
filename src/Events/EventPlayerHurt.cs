@@ -27,18 +27,20 @@ public partial class BaseBuilder
     {
         if (@event == null) return HookResult.Continue;
 
+        if (isEnabled == false) return HookResult.Continue;
+
         CCSPlayerController? player = @event.Attacker;
         CCSPlayerController? victim = @event.Userid;
 
         if (player == null || victim == null || !player.CheckValid() || !victim.CheckValid()) return HookResult.Continue;
 
-        if (player.TeamNum == BUILDER && PlayerTypes[player].isSuperKnifeActivatedForCt)
+        if (player.TeamNum == BUILDER && PlayerDatas[player].isSuperKnifeActivatedForCt)
         {
-            Server.NextFrame(() => victim.CommitSuicide(false, true));
+            Server.NextFrame(() => victim.SetHp(0));
         }
-        else if (player.TeamNum == ZOMBIE && PlayerTypes[player].isSuperKnifeActivatedForT)
+        else if (player.TeamNum == ZOMBIE && PlayerDatas[player].isSuperKnifeActivatedForT)
         {
-            Server.NextFrame(() => victim.CommitSuicide(false, true));
+            Server.NextFrame(() => victim.SetHp(0));
         }
 
         return HookResult.Continue;

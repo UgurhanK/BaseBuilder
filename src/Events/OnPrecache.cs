@@ -24,6 +24,8 @@ public partial class BaseBuilder
 {
     public void OnPrecache(ResourceManifest manifest)
     {
+        if (isEnabled == false) return;
+
         foreach (var zombie in Config.zombies.Values)
         {
             manifest.AddResource(zombie.ModelPath);

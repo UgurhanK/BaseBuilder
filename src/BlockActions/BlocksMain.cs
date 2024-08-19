@@ -99,12 +99,12 @@ public partial class BaseBuilder
 
         if (prop != null && prop.IsValid && hitPoint != null && hitPoint.HasValue)
         {
+            //fixed some bugs
+            if (VectorUtils.CalculateDistance(prop.AbsOrigin!, Vector3toVector(hitPoint.Value)) > 150) return;
+
             //Change block color to player color
             prop.Render = PlayerDatas[player].playerColor;
             Utilities.SetStateChanged(prop, "CBaseModelEntity", "m_clrRender");
-
-            //fixed some bugs
-            if (VectorUtils.CalculateDistance(prop.AbsOrigin!, Vector3toVector(hitPoint.Value)) > 150) return;
 
             var emptyProp = Utilities.CreateEntityByName<CDynamicProp>("prop_dynamic");
             if(emptyProp != null && emptyProp.IsValid)

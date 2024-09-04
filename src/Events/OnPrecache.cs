@@ -24,7 +24,16 @@ public partial class BaseBuilder
 {
     public void OnPrecache(ResourceManifest manifest)
     {
-        if (isEnabled == false) return;
+        foreach (var mapName in Config.PluginStartIn)
+        {
+            if (Server.MapName.Contains(mapName))
+            {
+                isEnabled = true;
+                break;
+            }
+        }
+
+        if (!isEnabled) return;
 
         foreach (var zombie in Config.zombies.Values)
         {

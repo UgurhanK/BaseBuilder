@@ -38,6 +38,7 @@ public partial class BaseBuilder
         foreach (var zombie in Config.zombies.Values)
         {
             manifest.AddResource(zombie.ModelPath);
+            if(zombie.ModelArmPath != "") manifest.AddResource(zombie.ModelArmPath);
         }
     }
 }

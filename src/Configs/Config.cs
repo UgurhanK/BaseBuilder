@@ -41,6 +41,7 @@ public class Zombie
     [JsonProperty] public float SpeedMultiplier { get; set; } = 1;
     [JsonProperty] public int Health { get; set; } = 2000;
     [JsonProperty] public string ModelPath { get; set; } = "characters/x.vmdl";
+    [JsonProperty] public string ModelArmPath { get; set; } = "characters/x_arms.vmdl";
 }
 
 public class Economy

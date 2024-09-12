@@ -82,7 +82,7 @@ public partial class BaseBuilder
                         player.ExecuteClientCommand("play sounds/basebuilder/block_drop.vsnd");
 
                         newprop.Teleport(new Vector(-10, -10, -10));
-                        newprop.AcceptInput("SetParent", PlayerHolds[player].mainProp, PlayerHolds[player].mainProp, "!activator");
+                        newprop.AcceptInput("FollowEntity", PlayerHolds[player].mainProp, newprop, "!activator");
                         PlayerHolds[player].emptyProp.Remove();
                         PlayerHolds.Remove(player);
                     }
@@ -142,7 +142,7 @@ public partial class BaseBuilder
             PlayerHolds[player].distance -= 3;
         }
 
-        PlayerHolds[player].emptyProp.AcceptInput("SetParent", PlayerHolds[player].mainProp, PlayerHolds[player].mainProp, "!activator");
+        PlayerHolds[player].emptyProp.AcceptInput("FollowEntity", PlayerHolds[player].mainProp, PlayerHolds[player].emptyProp, "!activator");
     }
 
     public void RemoveNotUsedBlocks()

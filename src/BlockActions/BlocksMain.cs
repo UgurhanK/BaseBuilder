@@ -82,7 +82,7 @@ public partial class BaseBuilder
                         player.ExecuteClientCommand("play sounds/basebuilder/block_drop.vsnd");
 
                         newprop.Teleport(new Vector(-10, -10, -10));
-                        CBaseEntity_SetParent(PlayerHolds[player].mainProp, newprop);
+                        newprop.AcceptInput("SetParent", PlayerHolds[player].mainProp, PlayerHolds[player].mainProp, "!activator");
                         PlayerHolds[player].emptyProp.Remove();
                         PlayerHolds.Remove(player);
                     }
@@ -142,7 +142,7 @@ public partial class BaseBuilder
             PlayerHolds[player].distance -= 3;
         }
 
-        CBaseEntity_SetParent(PlayerHolds[player].mainProp, PlayerHolds[player].emptyProp);
+        PlayerHolds[player].emptyProp.AcceptInput("SetParent", PlayerHolds[player].mainProp, PlayerHolds[player].mainProp, "!activator");
     }
 
     public void RemoveNotUsedBlocks()
@@ -157,19 +157,6 @@ public partial class BaseBuilder
             //Checking if removing parent prop
             if (!UsedBlocks.ContainsKey(entity) && entity.AbsOrigin!.Z > -9) entity.Remove();
         }
-    }
-
-    private static MemoryFunctionVoid<CBaseEntity, CBaseEntity, CUtlStringToken?, matrix3x4_t?> CBaseEntity_SetParentFunc
-        = new(GameData.GetSignature("CBaseEntity_SetParent"));
-
-    public static void CBaseEntity_SetParent(CBaseEntity childrenEntity, CBaseEntity parentEntity)
-    {
-        if (!childrenEntity.IsValid || !parentEntity.IsValid) return;
-
-        var origin = new Vector(childrenEntity.AbsOrigin!.X, childrenEntity.AbsOrigin!.Y, childrenEntity.AbsOrigin!.Z);
-        CBaseEntity_SetParentFunc.Invoke(childrenEntity, parentEntity, null, null);
-        // If not teleported, the childrenEntity will not follow the parentEntity correctly.
-        childrenEntity.Teleport(origin, new QAngle(IntPtr.Zero), new Vector(IntPtr.Zero));
     }
 }
 
